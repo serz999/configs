@@ -1,0 +1,63 @@
+- hosts: localhost
+  become_user: root 
+  vars:
+    - user: 'serz999'
+    - config_source: 'git@github.com:serz999/configs.git' 
+
+tasks:
+  - name: "Install available dpkg packages"
+    apt: 
+      name:
+        - zsh
+        - nvim
+        - git
+        - docker
+        - neofetch
+        - htop
+        - postgresql-client
+        - postman
+        - wireshark
+        - virtualbox
+      state: latest
+
+  - name: "Select zsh as default cli"
+    user:
+      name: ubuntu
+      shell: /bin/zsh
+
+  - name: "Install oh-my-zsh"
+    shell:
+      cmd: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+  - name: "Clone configs"
+    git:
+      repo: "{{ config_source }}"
+      dest: ./tmp-config
+      accept_hostkey: yes
+      key_file: "/home/{{ user }}/.ssh/id_rsa" 
+      force: yes
+    delegate_to: localhost
+    run_once: true
+    become: no
+
+  - name: "Copy zsh dotfiles"
+    copy:
+      src: ./tmp-config/zsh/.zshrc
+      dest: "/home/{{ user }}/.zshrc"
+      owner: "{{ user }}"
+      group: "{{ user }}"
+      mode: '0644'
+    copy:
+      src: ./tmp-config/zsh/.p10k.zsh
+      dest: "/home/{{ user }}/.p10k.zsh"
+      owner: "{{ user }}"
+      group: "{{ user }}"
+      mode: '0644'
+
+  - name: "Copy nvim config"
+    copy:
+      src: ./tmp-config/nvim
+      dest: "/home/{{ user }}/.config/nvim"
+      owner: "{{ user }}"
+      group: "{{ user }}"
+      mode: '0644'
