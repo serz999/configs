@@ -79,14 +79,9 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
     git
-    zsh-vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
-
-ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
-ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-ZVM_OPPEND_MODE_CURSOR=$ZVM_CURSOR_BLOCK
 
 # User configuration
 
